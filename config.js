@@ -14,11 +14,78 @@ for (const varName of requiredVars) {
   }
 }
 
-export const companies = ['FCL1','RMK','FLM1']; // Add more as needed
+export const companies = ['FCL1'];
 export const appGuid = '437dbf0e-84ff-417a-965d-ed2bb9650972';
-export const tableNames = ['Item', 'Vendor', 'Customer'];
 
-// Database configurations
+export const excludedTables = [
+  'User',
+  'Access Control',
+  'Object Metadata',
+  'Object',
+  'Permission Set',
+  'User Permission Set',
+  'User Setup',
+  'Page Data Personalization',
+  'Report Inbox',
+  'Change Log Entry',
+  'Record Link',
+  'Notes',
+  // 👇 Explicit Config_* exclusions
+  'Config_ Field Map',
+  'Config_ Field Mapping',
+  'Config_ Line',
+  'Config_ Media Buffer',
+  'Config_ Package Data',
+  'Config_ Package Error',
+
+  // 💡 Added pattern-based exclusions
+  /^Config_ /i,
+  /^Config_ Field/i,
+  /^Config_ Media/i,
+  /^Config_ Package/i
+];
+
+export async function getTableNames(pool, company, appGuid) {
+  const prefix = `${company}$`;
+  const suffix = `$${appGuid}`;
+
+  const result = await pool.request().query(`
+    SELECT TABLE_NAME
+    FROM INFORMATION_SCHEMA.TABLES
+    WHERE TABLE_TYPE = 'BASE TABLE'
+      AND TABLE_NAME LIKE '${prefix}%${suffix}'
+  `);
+
+  const allTables = result.recordset.map(r => r.TABLE_NAME);
+  const filtered = [];
+
+  for (const fullName of allTables) {
+    const baseMatch = fullName.match(new RegExp(`^${company}\\$(.*?)\\$${appGuid}$`));
+    if (!baseMatch) continue;
+
+    const baseName = baseMatch[1];
+
+    // 🔴 Skip any base table that starts with "Config"
+    if (baseName.startsWith("Config")) continue;
+
+    // Your original skip list check
+    if (excludedTables.includes(baseName)) continue;
+
+    // ✅ Include base table
+    filtered.push(fullName);
+
+    // ✅ Include its extension if it exists
+    const extName = `${company}$${baseName}$${appGuid}$ext`;
+    if (allTables.includes(extName)) {
+      filtered.push(extName);
+    }
+  }
+
+  return filtered;
+}
+
+
+
 export const dbConfigs = {
   src: {
     user: process.env.SRC_DB_USER,
@@ -55,7 +122,6 @@ export const getPool = async (dbName) => {
 
   if (!pools[dbName]) {
     try {
-      // Create a properly formatted config object
       const config = {
         user: dbConfigs[dbName].user,
         password: dbConfigs[dbName].password,
@@ -63,11 +129,10 @@ export const getPool = async (dbName) => {
         database: dbConfigs[dbName].database,
         options: {
           ...dbConfigs[dbName].options,
-           requestTimeout: 0 // unlimited timeout
+          requestTimeout: 0
         }
       };
 
-      // Validate server is provided
       if (!config.server || typeof config.server !== 'string') {
         throw new Error(`Invalid server configuration for ${dbName}`);
       }
