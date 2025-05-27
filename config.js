@@ -37,6 +37,9 @@ export const excludedTables = [
   'Config_ Media Buffer',
   'Config_ Package Data',
   'Config_ Package Error',
+  'Approval Entry',
+  'Batch Processing Session Map',
+  'Dim Correct Selection Criteria',
 
   // 💡 Added pattern-based exclusions
   /^Config_ /i,

@@ -1,0 +1,10 @@
+-- Fallback script for table FCL1$Production Order$437dbf0e-84ff-417a-965d-ed2bb9650972
+BEGIN TRANSACTION;
+
+DELETE FROM [FCL1$Production Order$437dbf0e-84ff-417a-965d-ed2bb9650972];
+
+INSERT INTO [FCL1$Production Order$437dbf0e-84ff-417a-965d-ed2bb9650972] ([Status], [No_], [Description], [Search Description], [Description 2], [Creation Date], [Last Date Modified], [Source Type], [Source No_], [Routing No_], [Variant Code], [Inventory Posting Group], [Gen_ Prod_ Posting Group], [Gen_ Bus_ Posting Group], [Starting Time], [Starting Date], [Ending Time], [Ending Date], [Due Date], [Finished Date], [Blocked], [Shortcut Dimension 1 Code], [Shortcut Dimension 2 Code], [Location Code], [Bin Code], [Replan Ref_ No_], [Replan Ref_ Status], [Low-Level Code], [Quantity], [Unit Cost], [Cost Amount], [No_ Series], [Planned Order No_], [Firm Planned Order No_], [Simulated Order No_], [Starting Date-Time], [Ending Date-Time], [Dimension Set ID], [Assigned User ID], [$systemId], [$systemCreatedAt], [$systemCreatedBy], [$systemModifiedAt], [$systemModifiedBy])
+SELECT [Status], [No_], [Description], [Search Description], [Description 2], [Creation Date], [Last Date Modified], [Source Type], [Source No_], [Routing No_], [Variant Code], [Inventory Posting Group], [Gen_ Prod_ Posting Group], [Gen_ Bus_ Posting Group], [Starting Time], [Starting Date], [Ending Time], [Ending Date], [Due Date], [Finished Date], [Blocked], [Shortcut Dimension 1 Code], [Shortcut Dimension 2 Code], [Location Code], [Bin Code], [Replan Ref_ No_], [Replan Ref_ Status], [Low-Level Code], [Quantity], [Unit Cost], [Cost Amount], [No_ Series], [Planned Order No_], [Firm Planned Order No_], [Simulated Order No_], [Starting Date-Time], [Ending Date-Time], [Dimension Set ID], [Assigned User ID], [$systemId], [$systemCreatedAt], [$systemCreatedBy], [$systemModifiedAt], [$systemModifiedBy]
+FROM [FCL].[dbo].[FCL1$Production Order$437dbf0e-84ff-417a-965d-ed2bb9650972];
+
+COMMIT;
